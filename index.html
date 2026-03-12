@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lyrix Arena</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family: "Georgia", serif;
+}
+
+/* Background Image */
+
+body{
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:
+linear-gradient(rgba(60,45,30,0.65), rgba(60,45,30,0.65)),
+url("bg.jpg");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+
+color:#3b2f2f;
+}
+
+/* Main Card */
+
+.container{
+width:85%;
+
+max-width:650px;
+padding:35px;
+border-radius:18px;
+
+background:#f5f1e8;
+
+box-shadow:0 12px 35px rgba(0,0,0,0.35);
+
+text-align:center;
+
+margin:auto;
+}
+
+/* Title */
+
+h1{
+font-size:40px;
+margin-bottom:10px;
+color:#5a3e2b;
+letter-spacing:1px;
+}
+
+/* Subtitle */
+
+p{
+font-size:18px;
+margin-bottom:25px;
+color:#6b4f3b;
+}
+
+/* Buttons */
+
+.btn{
+display:inline-block;
+margin:10px;
+padding:12px 28px;
+
+border:none;
+border-radius:30px;
+
+font-size:16px;
+font-weight:600;
+
+cursor:pointer;
+
+background:#8b5e3c;
+color:white;
+
+transition:0.25s;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn:hover{
+background:#a06d45;
+transform:scale(1.05);
+}
+
+/* Song Card */
+
+.audio-block{
+margin:25px 0;
+padding:25px;
+
+border-radius:14px;
+
+background:#fffdf7;
+
+box-shadow:0 6px 20px rgba(0,0,0,0.25);
+}
+
+/* Lyrics */
+
+.audio-block p{
+font-size:22px;
+line-height:1.7;
+font-weight:600;
+color:#4b3621;
+margin-bottom:18px;
+}
+
+/* Audio Player */
+
+audio{
+width:100%;
+}
+
+/* Navigation Buttons */
+
+#prev-btn{
+background:#a06d45;
+}
+
+#next-btn{
+background:#6d8b3d;
+}
+
+/* Hide */
+
+.hidden{
+display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container" id="home">
+<h1>🎵 Lyrix Arena</h1>
+<p>Select a category</p>
+
+<button class="btn" onclick="startQuiz('nextline')">
+Find the Next Line
+</button>
+
+<button class="btn" onclick="startQuiz('bgm')">
+Identify Song by BGM
+</button>
+</div>
+
+
+<div class="container hidden" id="quiz-container">
+
+<h1 id="quiz-title"></h1>
+
+<div id="song-display" class="audio-block"></div>
+
+<button class="btn" id="prev-btn" onclick="prevSong()">Previous</button>
+<button class="btn" id="next-btn" onclick="nextSong()">Next</button>
+<br>
+<button class="btn" onclick="goHome()">Back to Home</button>
+
+</div>
+
+
+<script>
+
+const nextLineSongs = [
+
+{
+audio: "assets/nextline/song1.mp3",
+lyrics: [
+"கவின் பூவே கண்ணாளா",
+"குடைக்குள்ளாடும் மழைக்காக",
+"எதிர் பார்த்தேன் இந்நாளா",
+
+"தரை நில்லா நில்லா இரு காலோடு",
+"கரை கொள்ளா கொள்ளா அலை நீரோடு",
+"உறங்காமலே……"
+]
+},
+
+{
+audio: "assets/nextline/song2.mp3",
+lyrics: [
+"சயனைட் சயனைட்",
+"விழியால் மயக்கும் பொயடிக்",
+"மொழியால் இனிக்க இனிக்க",
+"கொல்லும் கொலையாளி",
+
+"ஆப்பிள் லாப்டாப்",
+"பெண்ணே மடியில் வைத்து",
+"உன்னை விரல்கள் தேயக்",
+"கொஞ்சி நான் ரசிப்பேனே",
+]
+},
+
+{
+audio: "assets/nextline/song3.mp3",
+lyrics: [
+"நீயே நீயே அந்த",
+"ஜூலியட்டின் சாயல்",
+"உன் தேகம் எந்தன் கூடல்",
+"இனி தேவை இல்லை ஊடல்",
+"தீயே தீயே நான்",
+"தித்திக்கின்ற தீயே",
+"எனை முத்தமிடுவாயே"
+]
+},
+
+{
+audio: "assets/nextline/song4.mp3",
+lyrics: [
+"ஈரம் ஈரம் கண் ஓரம் மெதுவா கோதுமே….ஏ…",
+"ஓட ஓட நான் மேல சாஞ்சிக்க",
+"தீர தீரா உன் தோள் இல்லையா?",
+"ஈரம் ஈரம் கண் ஓரம் மெதுவா கோதுமே….ஏ…",
+"ஆவலும் ஆளுது",
+"பாடலும் நீளுது"
+]
+},
+{
+audio: "assets/nextline/song5.mp3",
+lyrics: [
+"என் பவுடா் டப்பா",
+"தீா்ந்து போனது அந்த",
+"கண்ணாடியும் கடுப்பு ஆனது",
+"நான் குப்புறத்தான் படுத்து கெடந்தேன்",
+"என்ன குதிர மேல ஏத்தி விட்டாயே",
+
+"ஒன்னும் சொல்லாம",
+"உசுர தொட்டாயே"
+]
+},
+{
+audio: "assets/nextline/song6.mp3",
+lyrics: [
+"பில்டர் ஒன்னும் போடாமலே",
+"உன் முகத்த பாக்கும்போது",
+"நெஞ்சம் அள்ளுது",
+"டப்பாங்குத்து",
+"பாட்டும் இல்ல டன்டனக்கா",
+"பீட்டும் இல்ல உன்ன பாக்கும்",
+"போது ரெண்டு காலும் துள்ளுது,குச்சி ஐஸ் இல்ல",
+"அல்வாவும் இல்ல உன்,பேர் சொன்னா நாக்கெல்லாம்",
+"தித்திக்குதே",
+"அட தண்ணிக்குள்ள",
+"நான் முங்கும்போது உன்ன",
+"நினைச்சாலே எங்கெங்கோ பத்திக்குதே"
+]
+},
+{
+audio: "assets/nextline/song7.mp3",
+lyrics: [
+"தயக்கங்கள்",
+"விலகுதே தவிப்புகள்",
+"தொடருதே அடுத்தது",
+"என்ன என்ன என்றேதான் தேடுதே",
+"ஆண் : வண்ணங்கள்",
+"வண்ணங்கள் அற்ற",
+"வழியில் வழியில் சில"
+]
+},
+{
+audio: "assets/nextline/song8.mp3",
+lyrics: [
+"அடி மேடு பள்ளம் பாத்து நான்",
+"சொக்கி போனேன் கேர்-ருல்ல",
+"தூக்கி வெச்சு தாக்க போறேன் நேர்ருல்ல",
+"மங்கை அவள் கூந்தலுக்குள்ளே",
+"மல்லுயுத்தம் நடக்குதா",
+"மன்றம் வந்த தென்றலும் இப்போ",
+"வெக்கப்பட்டு சிரிக்குதா"
+]
+},
+{
+audio: "assets/nextline/song9.mp3",
+lyrics: [
+"செவ்வாய்க் குயிலே பொன் செவ்வேல் விழியே",
+"என் செவ்வால் கிளியே வா வெளியே",
+"நீா் வாழ் குழலே கண் நோ் காண் எழிலே",
+"என் மாா்மேல் மயிலே வா வெளியே",
+"ஆட் படை கொண்டு தாக்கிய போதும் வானம்",
+"வளைவதும் இல்லை"
+]
+},
+{
+audio: "assets/nextline/song10.mp3",
+lyrics: [
+"கண்ணு வளத்து",
+"கண்ணு தானா துடிச்சுதுனா",
+"ஏதோ நடக்குமின்னு பேச்சு",
+"மானம் குறையுமின்னு",
+"மாசு படியுமின்னு வீணா கதை முடிஞ்சு போச்சு",
+"ஈசான மூலையில லேசான பள்ளி சத்தம்",
+"மாமன் பேரை சொல்லி பேசுது"
+]
+}
+];
+
+const bgmSongs = [
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 1.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 2.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 3.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 4.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 5.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 6.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 7.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 8.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 9.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 10.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 11.mp3" },
+{ lyrics: "🎵 Listen and guess the song", audio: "assets/bgm/song 12.mp3" },
+];
+
+let currentCategory=[];
+let currentIndex=0;
+
+function startQuiz(category){
+
+document.getElementById("home").classList.add("hidden");
+document.getElementById("quiz-container").classList.remove("hidden");
+
+currentCategory = category === "nextline" ? nextLineSongs : bgmSongs;
+
+document.getElementById("quiz-title").innerText =
+category === "nextline"
+? "Find the Next Line"
+: "Identify Song by BGM";
+
+currentIndex=0;
+
+displaySong();
+}
+
+function displaySong(){
+
+const song=currentCategory[currentIndex];
+
+const container=document.getElementById("song-display");
+
+container.innerHTML=
+`<p>${currentIndex+1}. ${song.lyrics}</p>
+<audio controls src="${song.audio}"></audio>`;
+
+document.getElementById("prev-btn").style.display =
+currentIndex===0 ? "none":"inline-block";
+
+document.getElementById("next-btn").style.display =
+currentIndex===currentCategory.length-1 ? "none":"inline-block";
+
+}
+
+function nextSong(){
+if(currentIndex<currentCategory.length-1){
+currentIndex++;
+displaySong();
+}
+}
+
+function prevSong(){
+if(currentIndex>0){
+currentIndex--;
+displaySong();
+}
+}
+
+function goHome(){
+document.getElementById("quiz-container").classList.add("hidden");
+document.getElementById("home").classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
